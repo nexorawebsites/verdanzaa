@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VERDANZA — Premium Health & Wellness</title>
+<meta name="description" content="VERDANZA offers premium natural supplements, wellness products, and anti-aging solutions.">
+<meta name="keywords" content="premium supplements, wellness, anti-aging, natural health, VERDANZA">
+<meta name="theme-color" content="#1E5B3A">
+<link rel="icon" type="image/png" href="https://i.imgur.com/peR9gKf.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,500;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=Noto+Kufi+Arabic:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<style>
+:root {
+  --green: #1E5B3A;
+  --dark-green: #123B27;
+  --gold: #A89B6B;
+  --black: #1C1C1C;
+  --white: #F7F7F5;
+  --gray: #D9D9D6;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; overflow-x: hidden; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--white);
+  color: var(--black);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+[dir="rtl"] body { font-family: 'Noto Kufi Arabic', 'Inter', sans-serif; }
+::selection { background: var(--green); color: var(--white); }
+
+#preloader {
+  position: fixed; inset:0; background: var(--dark-green);
+  z-index: 100000; display: flex; align-items: center;
+  justify-content: center; flex-direction: column;
+  transition: opacity 0.6s ease, visibility 0.6s ease;
+}
+#preloader.done { opacity:0; visibility: hidden; pointer-events: none; }
+#preloader img { width:90px; height:90px; object-fit: contain; animation: plPulse 1.2s ease-in-out infinite; }
+#preloader .bar-wrap { width:160px; height:2px; background: rgba(255,255,255,0.12); margin-top:32px; border-radius:2px; overflow: hidden; }
+#preloader .bar-fill { height:100%; background: var(--gold); border-radius:2px; animation: plFill 1.4s ease-in-out forwards; }
+@keyframes plPulse { 0%,100%{transform:scale(1);opacity:.7}50%{transform:scale(1.06);opacity:1} }
+@keyframes plFill { 0%{width:0}60%{width:65%}100%{width:100%} }
+
+.navbar {
+  position: fixed; top:0; left:0; right:0; z-index:9999;
+  padding: 18px 0; transition: all 0.4s cubic-bezier(.4,0,.2,1);
+}
+.navbar.scrolled {
+  background: rgba(18,59,39,0.97); backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px); padding: 10px 0;
+  box-shadow: 0 2px 40px rgba(0,0,0,0.15);
+}
+.nav-link {
+  color: rgba(247,247,245,0.8); font-size: 0.78rem; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none;
+  position: relative; padding: 6px 0; transition: color 0.3s;
+}
+.nav-link::after {
+  content:''; position: absolute; bottom:0; left:0; width:0; height:1px;
+  background: var(--gold); transition: width 0.35s cubic-bezier(.4,0,.2,1);
+}
+.nav-link:hover { color: var(--gold); }
+.nav-link:hover::after { width:100%; }
+
+.lang-switch {
+  display: inline-flex; align-items: center; gap:6px;
+  padding: 7px 18px; border: 1px solid rgba(168,155,107,0.35);
+  border-radius: 100px; color: var(--white); font-size: 0.78rem;
+  font-weight: 500; cursor: pointer; background: transparent;
+  transition: all 0.3s; letter-spacing: 0.04em; white-space: nowrap;
+}
+.lang-switch:hover { background: var(--gold); color: var(--dark-green); border-color: var(--gold); }
+.lang-switch svg { width:14px; height:14px; }
+
+.mobile-overlay {
+  position: fixed; inset:0; background: rgba(18,59,39,0.98);
+  z-index: 9998; display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  opacity:0; visibility:hidden; transition: all 0.5s cubic-bezier(.4,0,.2,1);
+}
+.mobile-overlay.open { opacity:1; visibility:visible; }
+.mobile-overlay a {
+  color: var(--white); font-family:'Playfair Display',serif;
+  font-size: 1.8rem; text-decoration:none; margin:12px 0;
+  opacity:0; transform: translateY(20px);
+  transition: opacity 0.4s, transform 0.4s, color 0.3s;
+}
+.mobile-overlay.open a { opacity:0.85; transform: translateY(0); }
+.mobile-overlay a:hover { color: var(--gold); opacity:1; }
+[dir="rtl"] .mobile-overlay a { font-family:'Noto Kufi Arabic',serif; }
+.hamburger {
+  display:none; flex-direction:column; cursor:pointer; gap:5px; z-index:10000; padding:4px;
+}
+.hamburger span {
+  width:26px; height:1.5px; background: var(--white);
+  transition: all 0.35s ease; border-radius:2px; display:block;
+}
+.hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(4px,5px); }
+.hamburger.open span:nth-child(2) { opacity:0; transform: scaleX(0); }
+.hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(4px,-5px); }
+@media(max-width:1024px) {
+  .hamburger { display:flex; }
+  .desk-links { display:none !important; }
+}
+
+.hero {
+  min-height: 100vh; position: relative; display:flex;
+  align-items:center; justify-content:center; overflow:hidden;
+  background: linear-gradient(160deg, #0c2e1a 0%, var(--dark-green) 25%, var(--green) 55%, #1a5235 80%, #0e3320 100%);
+}
+.hero-mesh {
+  position:absolute; inset:0; opacity:0.035;
+  background-image:
+    radial-gradient(ellipse at 20% 50%, var(--gold) 0.5px, transparent 0.5px),
+    radial-gradient(ellipse at 80% 20%, var(--gold) 0.5px, transparent 0.5px);
+  background-size: 60px 60px, 45px 45px;
+}
+.hero-glow { position:absolute; border-radius:50%; filter:blur(100px); pointer-events:none; }
+.hero-particles { position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.particle { position:absolute; width:3px; height:3px; background: var(--gold); border-radius:50%; opacity:0; }
+.hero-line-deco {
+  position:absolute; width:1px;
+  background: linear-gradient(to bottom, transparent, rgba(168,155,107,0.12), transparent);
+  pointer-events:none;
+}
+.scroll-hint {
+  position:absolute; bottom:32px; left:50%; transform:translateX(-50%);
+  display:flex; flex-direction:column; align-items:center; gap:8px;
+}
+.scroll-hint-bar { width:1px; height:40px; background: linear-gradient(to bottom, rgba(168,155,107,0.5), transparent); }
+.scroll-hint span { color: rgba(247,247,245,0.35); font-size:0.6rem; letter-spacing:0.3em; text-transform:uppercase; }
+
+.sec-label { font-size: 0.72rem; font-weight:600; letter-spacing:0.3em; text-transform:uppercase; color: var(--gold); margin-bottom:14px; display:block; }
+.sec-title { font-family:'Playfair Display', serif; font-weight:700; color: var(--dark-green); line-height:1.12; }
+[dir="rtl"] .sec-title { font-family:'Noto Kufi Arabic','Playfair Display',serif; }
+.sec-line { width:50px; height:1px; background: var(--gold); margin:20px auto; }
+
+.prod-card {
+  background:#fff; border-radius:14px; overflow:hidden;
+  border:1px solid rgba(217,217,214,0.45);
+  transition: all 0.45s cubic-bezier(.4,0,.2,1);
+  cursor:pointer; position:relative; display:flex; flex-direction:column;
+}
+.prod-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(30,91,58,0.1), 0 6px 16px rgba(0,0,0,0.04);
+  border-color: rgba(168,155,107,0.35);
+}
+.prod-img { position:relative; overflow:hidden; background: linear-gradient(145deg, #f5f5f2, #edecea); aspect-ratio: 1/1; }
+.prod-img img { width:100%; height:100%; object-fit:cover; transition: transform 0.6s cubic-bezier(.4,0,.2,1); }
+.prod-card:hover .prod-img img { transform: scale(1.06); }
+.prod-body { padding:16px 18px 18px; text-align:center; flex:1; display:flex; flex-direction:column; gap:6px; }
+.prod-name { font-family:'Playfair Display',serif; font-size:0.95rem; font-weight:600; color: var(--dark-green); line-height:1.3; }
+[dir="rtl"] .prod-name { font-family:'Noto Kufi Arabic',serif; }
+.prod-cat { font-size:0.65rem; letter-spacing:0.15em; text-transform:uppercase; color: var(--gold); font-weight:500; }
+.prod-order { display:inline-flex; align-items:center; justify-content:center; gap:6px; margin-top:auto; padding:10px 0 2px; }
+.prod-order a {
+  display:inline-flex; align-items:center; gap:6px;
+  padding: 8px 20px; background: var(--green); color:#fff;
+  font-size:0.68rem; font-weight:600; letter-spacing:0.1em;
+  text-transform:uppercase; text-decoration:none; border-radius:6px;
+  transition: all 0.3s; border:none; cursor:pointer;
+}
+.prod-order a:hover { background: var(--dark-green); transform:scale(1.03); }
+
+.feat-card {
+  background:#fff; border-radius:14px; padding:36px 28px;
+  text-align:center; border:1px solid rgba(217,217,214,0.35);
+  transition: all 0.45s cubic-bezier(.4,0,.2,1); position:relative; overflow:hidden;
+}
+.feat-card::after {
+  content:''; position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+  width:0; height:2px; background: var(--gold);
+  transition: width 0.45s cubic-bezier(.4,0,.2,1);
+}
+.feat-card:hover { transform:translateY(-5px); box-shadow:0 16px 40px rgba(0,0,0,0.05); }
+.feat-card:hover::after { width:50px; }
+.feat-icon {
+  width:58px; height:58px; border-radius:50%;
+  background: linear-gradient(135deg, var(--green), var(--dark-green));
+  display:flex; align-items:center; justify-content:center;
+  margin:0 auto 20px; transition: transform 0.35s;
+}
+.feat-card:hover .feat-icon { transform:scale(1.08) rotate(3deg); }
+
+.testi-card {
+  background:#fff; border-radius:16px; padding:36px 30px;
+  border:1px solid rgba(217,217,214,0.25); position:relative; transition: all 0.4s;
+}
+.testi-card:hover { box-shadow:0 16px 40px rgba(0,0,0,0.05); transform:translateY(-3px); }
+.testi-quote { font-family:'Playfair Display',serif; font-size:4rem; color: var(--gold); opacity:0.15; position:absolute; top:8px; left:24px; line-height:1; }
+
+.gal-item { border-radius:12px; overflow:hidden; position:relative; cursor:pointer; }
+.gal-item img { width:100%; height:100%; object-fit:cover; transition: transform 0.6s cubic-bezier(.4,0,.2,1); }
+.gal-item:hover img { transform:scale(1.08); }
+.gal-over {
+  position:absolute; inset:0;
+  background: linear-gradient(to top, rgba(18,59,39,0.75) 0%, transparent 50%);
+  opacity:0; transition: opacity 0.4s; display:flex; align-items:flex-end; padding:18px;
+}
+.gal-item:hover .gal-over { opacity:1; }
+
+.btn-lux {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 36px; border:1px solid var(--gold); color: var(--gold);
+  font-size:0.72rem; font-weight:600; letter-spacing:0.18em;
+  text-transform:uppercase; text-decoration:none; background:transparent;
+  cursor:pointer; position:relative; overflow:hidden; transition: color 0.35s;
+}
+.btn-lux::before {
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background: var(--gold); transition: left 0.4s cubic-bezier(.4,0,.2,1); z-index:0;
+}
+.btn-lux span, .btn-lux svg { position:relative; z-index:1; }
+.btn-lux:hover { color: var(--dark-green); }
+.btn-lux:hover::before { left:0; }
+.btn-gold {
+  display:inline-flex; align-items:center; gap:10px;
+  padding:14px 36px; background: var(--gold); color: var(--dark-green);
+  font-size:0.72rem; font-weight:600; letter-spacing:0.18em;
+  text-transform:uppercase; text-decoration:none; cursor:pointer;
+  position:relative; overflow:hidden; transition: all 0.35s; border:1px solid var(--gold);
+}
+.btn-gold::before {
+  content:''; position:absolute; top:0; left:-100%; width:100%; height:100%;
+  background: var(--dark-green); transition: left 0.4s cubic-bezier(.4,0,.2,1); z-index:0;
+}
+.btn-gold span, .btn-gold svg { position:relative; z-index:1; }
+.btn-gold:hover { color: var(--gold); }
+.btn-gold:hover::before { left:0; }
+
+.wa-float {
+  position:fixed; bottom:28px; right:28px; z-index:9990;
+  width:58px; height:58px; border-radius:50%; background:#25D366;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; text-decoration:none;
+  box-shadow: 0 4px 24px rgba(37,211,102,0.35);
+  transition: all 0.35s; animation: waPulse 2.5s ease-in-out infinite;
+}
+[dir="rtl"] .wa-float { right:auto; left:28px; }
+.wa-float:hover { transform:scale(1.12); box-shadow:0 6px 30px rgba(37,211,102,0.5); }
+@keyframes waPulse {
+  0%,100%{box-shadow:0 4px 24px rgba(37,211,102,0.35)}
+  50%{box-shadow:0 4px 24px rgba(37,211,102,0.5),0 0 0 12px rgba(37,211,102,0.07)}
+}
+
+.footer { background: var(--dark-green); color: rgba(247,247,245,0.65); }
+.footer a { color: rgba(247,247,245,0.55); text-decoration:none; transition: color 0.3s; font-size:0.88rem; }
+.footer a:hover { color: var(--gold); }
+
+.anim-up { opacity:0; transform:translateY(35px); }
+.anim-left { opacity:0; transform:translateX(-35px); }
+.anim-right { opacity:0; transform:translateX(35px); }
+.anim-scale { opacity:0; transform:scale(0.92); }
+
+@media(max-width:768px) { .hero h1 { font-size:2.5rem !important; } }
+@media(max-width:480px) { .hero h1 { font-size:2rem !important; } .prod-body { padding:12px 14px 14px; } .prod-name { font-size:0.85rem; } }
+</style>
+</head>
+<body>
+
+<div id="preloader">
+  <img src="https://i.imgur.com/peR9gKf.png" alt="VERDANZA">
+  <div class="bar-wrap"><div class="bar-fill"></div></div>
+</div>
+
+<a href="https://wa.me/9613332818" target="_blank" rel="noopener" class="wa-float" aria-label="WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<nav class="navbar" id="navbar">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 flex items-center justify-between">
+    <a href="#hero" class="flex items-center gap-2.5 z-50 no-underline">
+      <img src="https://i.imgur.com/peR9gKf.png" alt="VERDANZA" class="h-9 w-auto">
+      <span class="text-white font-semibold tracking-[0.14em] text-base hidden sm:block" style="font-family:'Playfair Display',serif;">VERDANZA</span>
+    </a>
+    <div class="desk-links flex items-center gap-9">
+      <a href="#hero" class="nav-link" data-en="Home" data-ar="الرئيسية">Home</a>
+      <a href="#products" class="nav-link" data-en="Products" data-ar="المنتجات">Products</a>
+      <a href="#about" class="nav-link" data-en="About" data-ar="من نحن">About</a>
+      <a href="#why-us" class="nav-link" data-en="Why Us" data-ar="لماذا نحن">Why Us</a>
+      <a href="#contact" class="nav-link" data-en="Contact" data-ar="تواصل معنا">Contact</a>
+      <button class="lang-switch" id="langBtnD" onclick="switchLang()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/></svg>
+        <span id="langLabelD">عربي</span>
+      </button>
+    </div>
+    <div class="hamburger" id="burger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+  </div>
+</nav>
+
+<div class="mobile-overlay" id="mobMenu">
+  <a href="#hero" onclick="closeMenu()" data-en="Home" data-ar="الرئيسية">Home</a>
+  <a href="#products" onclick="closeMenu()" data-en="Products" data-ar="المنتجات">Products</a>
+  <a href="#about" onclick="closeMenu()" data-en="About" data-ar="من نحن">About</a>
+  <a href="#why-us" onclick="closeMenu()" data-en="Why Us" data-ar="لماذا نحن">Why Us</a>
+  <a href="#contact" onclick="closeMenu()" data-en="Contact" data-ar="تواصل معنا">Contact</a>
+  <button class="lang-switch mt-10 text-base px-7 py-3" id="langBtnM" onclick="switchLang();closeMenu();">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:16px;height:16px;"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10A15.3 15.3 0 0112 2z"/></svg>
+    <span id="langLabelM">عربي</span>
+  </button>
+</div>
+
+<section class="hero" id="hero">
+  <div class="hero-mesh"></div>
+  <div class="hero-glow" style="width:700px;height:700px;background:rgba(168,155,107,0.08);top:-250px;right:-200px;"></div>
+  <div class="hero-glow" style="width:500px;height:500px;background:rgba(30,91,58,0.15);bottom:-150px;left:-120px;"></div>
+  <div class="hero-glow" style="width:350px;height:350px;background:rgba(168,155,107,0.06);bottom:15%;right:8%;"></div>
+  <div class="hero-line-deco" style="height:240px;top:8%;left:12%;"></div>
+  <div class="hero-line-deco" style="height:300px;bottom:0;right:18%;"></div>
+  <div class="hero-line-deco" style="height:180px;top:20%;right:35%;"></div>
+  <div class="hero-particles" id="heroParticles"></div>
+  <div class="relative z-10 text-center max-w-5xl mx-auto px-5" id="heroContent">
+    <img src="https://i.imgur.com/peR9gKf.png" alt="VERDANZA" class="w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-7 object-contain" style="filter:brightness(1.15);" id="heroLogo">
+    <p class="text-xs sm:text-sm tracking-[0.4em] uppercase font-medium mb-5" style="color:var(--gold);" id="heroSub" data-en="Premium Health & Wellness" data-ar="الصحة والعافية الفاخرة">Premium Health & Wellness</p>
+    <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white leading-[1.08] mb-6" style="font-family:'Playfair Display',serif;" id="heroTitle" data-en="Elevate Your Wellness" data-ar="ارتقِ بصحتك وعافيتك">Elevate Your Wellness</h1>
+    <p class="text-base sm:text-lg md:text-xl max-w-2xl mx-auto mb-10" style="color:rgba(247,247,245,0.55);font-family:'Cormorant Garamond',serif;font-weight:400;line-height:1.7;" id="heroDesc" data-en="Discover nature's finest ingredients, meticulously curated for those who demand nothing but excellence in their health journey." data-ar="اكتشف أجود المكونات الطبيعية، المختارة بعناية فائقة لمن يطلب التميز المطلق في رحلته الصحية.">Discover nature's finest ingredients, meticulously curated for those who demand nothing but excellence in their health journey.</p>
+    <div id="heroBtns" class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="#products" class="btn-lux">
+        <span data-en="Explore Collection" data-ar="استكشف المجموعة">Explore Collection</span>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a href="https://wa.me/9613332818" target="_blank" class="btn-gold">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        <span data-en="Order on WhatsApp" data-ar="اطلب عبر واتساب">Order on WhatsApp</span>
+      </a>
+    </div>
+  </div>
+  <div class="scroll-hint" id="scrollHint">
+    <div class="scroll-hint-bar" style="animation:scrollAnim 2s ease-in-out infinite;"></div>
+    <span data-en="Scroll" data-ar="مرر">Scroll</span>
+  </div>
+  <style>@keyframes scrollAnim{0%,100%{opacity:.5;transform:scaleY(1)}50%{opacity:1;transform:scaleY(1.3)}}</style>
+</section>
+
+<!-- PRODUCTS — 6 products (removed Premium Honey For Men & Dragon Spray) -->
+<section class="py-20 md:py-28" style="background:var(--white);" id="products">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="text-center mb-16 anim-up">
+      <span class="sec-label" data-en="Our Collection" data-ar="مجموعتنا">Our Collection</span>
+      <h2 class="sec-title text-3xl sm:text-4xl md:text-5xl" data-en="Premium Products" data-ar="منتجات فاخرة">Premium Products</h2>
+      <div class="sec-line"></div>
+      <p class="mt-5 max-w-lg mx-auto text-sm sm:text-base" style="color:rgba(28,28,28,0.5);font-family:'Cormorant Garamond',serif;font-size:1.1rem;line-height:1.7;" data-en="Each product is carefully selected to deliver unmatched quality and real results for your wellness journey." data-ar="كل منتج مختار بعناية لتقديم جودة لا مثيل لها ونتائج حقيقية في رحلتك الصحية.">Each product is carefully selected to deliver unmatched quality and real results for your wellness journey.</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+
+      <div class="prod-card anim-up">
+        <div class="prod-img"><img src="https://i.imgur.com/oHmKLG9.jpeg" alt="Magnesium Glycinate" loading="lazy"></div>
+        <div class="prod-body">
+          <h3 class="prod-name" data-en="Magnesium Glycinate" data-ar="مغنيسيوم جلايسينات">Magnesium Glycinate</h3>
+          <p class="prod-cat" data-en="Wellness" data-ar="عافية">Wellness</p>
+          <div class="prod-order"><a href="https://wa.me/9613332818?text=Hi%2C%20I%27m%20interested%20in%20Magnesium%20Glycinate" target="_blank" data-en="Order Now" data-ar="اطلب الآن">Order Now</a></div>
+        </div>
+      </div>
+
+      <div class="prod-card anim-up">
+        <div class="prod-img"><img src="https://i.imgur.com/Hz2SaHU.jpeg" alt="Skin Whitening" loading="lazy"></div>
+        <div class="prod-body">
+          <h3 class="prod-name" data-en="Skin Whitening" data-ar="تفتيح البشرة">Skin Whitening</h3>
+          <p class="prod-cat" data-en="Anti-Aging" data-ar="مكافحة الشيخوخة">Anti-Aging</p>
+          <div class="prod-order"><a href="https://wa.me/9613332818?text=Hi%2C%20I%27m%20interested%20in%20Skin%20Whitening" target="_blank" data-en="Order Now" data-ar="اطلب الآن">Order Now</a></div>
+        </div>
+      </div>
+
+      <div class="prod-card anim-up">
+        <div class="prod-img"><img src="https://i.imgur.com/AYfDD60.jpeg" alt="NAD+" loading="lazy"></div>
+        <div class="prod-body">
+          <h3 class="prod-name">NAD+</h3>
+          <p class="prod-cat" data-en="Longevity" data-ar="طول العمر">Longevity</p>
+          <div class="prod-order"><a href="https://wa.me/9613332818?text=Hi%2C%20I%27m%20interested%20in%20NAD%2B" target="_blank" data-en="Order Now" data-ar="اطلب الآن">Order Now</a></div>
+        </div>
+      </div>
+
+      <div class="prod-card anim-up">
+        <div class="prod-img"><img src="https://i.imgur.com/Q3KkJLH.jpeg" alt="Back Pain Gel" loading="lazy"></div>
+        <div class="prod-body">
+          <h3 class="prod-name" data-en="Back Pain Gel" data-ar="جل آلام الظهر">Back Pain Gel</h3>
+          <p class="prod-cat" data-en="Pain Relief" data-ar="تخفيف الألم">Pain Relief</p>
+          <div class="prod-order"><a href="https://wa.me/9613332818?text=Hi%2C%20I%27m%20interested%20in%20Back%20Pain%20Gel" target="_blank" data-en="Order Now" data-ar="اطلب الآن">Order Now</a></div>
+        </div>
+      </div>
+
+      <div class="prod-card anim-up">
+        <div class="prod-img"><img src="https://i.imgur.com/sL4LRcP.jpeg" alt="Berberine" loading="lazy"></div>
+        <div class="prod-body">
+          <h3 class="prod-name" data-en="Berberine" data-ar="بربارين">Berberine</h3>
+          <p class="prod-cat" data-en="Supplements" data-ar="مكملات">Supplements</p>
+          <div class="prod-order"><a href="https://wa.me/9613332818?text=Hi%2C%20I%27m%20interested%20in%20Berberine" target="_blank" data-en="Order Now" data-ar="اطلب الآن">Order Now</a></div>
+        </div>
+      </div>
+
+      <div class="prod-card anim-up">
+        <div class="prod-img"><img src="https://i.imgur.com/n6bjEEd.jpg" alt="Maxman" loading="lazy"></div>
+        <div class="prod-body">
+          <h3 class="prod-name" data-en="Maxman" data-ar="ماكسمان">Maxman</h3>
+          <p class="prod-cat" data-en="Vitality" data-ar="حيوية">Vitality</p>
+          <div class="prod-order"><a href="https://wa.me/9613332818?text=Hi%2C%20I%27m%20interested%20in%20Maxman" target="_blank" data-en="Order Now" data-ar="اطلب الآن">Order Now</a></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="py-20 md:py-28 relative overflow-hidden" id="about" style="background:var(--dark-green);">
+  <div class="absolute top-0 right-0 w-80 h-80 rounded-full" style="background:var(--gold);filter:blur(140px);opacity:0.04;"></div>
+  <div class="absolute bottom-0 left-0 w-72 h-72 rounded-full" style="background:var(--gold);filter:blur(120px);opacity:0.04;"></div>
+  <div class="max-w-7xl mx-auto px-5 lg:px-8 relative z-10">
+    <div class="grid lg:grid-cols-2 gap-14 lg:gap-20 items-center">
+      <div class="anim-left">
+        <span class="sec-label" data-en="About VERDANZA" data-ar="عن فيردانزا">About VERDANZA</span>
+        <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-7" style="font-family:'Playfair Display',serif;line-height:1.12;" data-en="Where Nature Meets Luxury" data-ar="حيث تلتقي الطبيعة بالفخامة">Where Nature Meets Luxury</h2>
+        <div class="w-14 h-[1px] mb-7" style="background:var(--gold);"></div>
+        <p class="text-base sm:text-lg mb-5" style="color:rgba(247,247,245,0.58);font-family:'Cormorant Garamond',serif;line-height:1.8;" data-en="VERDANZA represents the pinnacle of health and wellness. We source the world's finest natural ingredients and formulate premium supplements that deliver real, measurable results." data-ar="فيردانزا تمثل قمة الصحة والعافية. نحصل على أجود المكونات الطبيعية من حول العالم ونصيغ مكملات فاخرة تحقق نتائج حقيقية وملموسة.">VERDANZA represents the pinnacle of health and wellness. We source the world's finest natural ingredients and formulate premium supplements that deliver real, measurable results.</p>
+        <p class="text-base sm:text-lg mb-9" style="color:rgba(247,247,245,0.42);font-family:'Cormorant Garamond',serif;line-height:1.8;" data-en="Every product undergoes rigorous quality testing. We believe true wellness is a luxury everyone deserves." data-ar="كل منتج يخضع لاختبارات جودة صارمة. نؤمن أن العافية الحقيقية رفاهية يستحقها الجميع.">Every product undergoes rigorous quality testing. We believe true wellness is a luxury everyone deserves.</p>
+        <a href="https://wa.me/9613332818" target="_blank" class="btn-lux"><span data-en="Contact Us" data-ar="تواصل معنا">Contact Us</span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+      </div>
+      <div class="grid grid-cols-2 gap-5">
+        <div class="bg-white/[0.04] backdrop-blur-sm rounded-xl p-6 sm:p-7 text-center border border-white/[0.07] anim-up"><div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2" style="color:var(--gold);font-family:'Playfair Display',serif;">500+</div><p class="text-xs sm:text-sm text-white/40 uppercase tracking-[0.15em]" data-en="Happy Clients" data-ar="عميل سعيد">Happy Clients</p></div>
+        <div class="bg-white/[0.04] backdrop-blur-sm rounded-xl p-6 sm:p-7 text-center border border-white/[0.07] anim-up"><div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2" style="color:var(--gold);font-family:'Playfair Display',serif;">50+</div><p class="text-xs sm:text-sm text-white/40 uppercase tracking-[0.15em]" data-en="Products" data-ar="منتج">Products</p></div>
+        <div class="bg-white/[0.04] backdrop-blur-sm rounded-xl p-6 sm:p-7 text-center border border-white/[0.07] anim-up"><div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2" style="color:var(--gold);font-family:'Playfair Display',serif;">100%</div><p class="text-xs sm:text-sm text-white/40 uppercase tracking-[0.15em]" data-en="Authentic" data-ar="أصلي">Authentic</p></div>
+        <div class="bg-white/[0.04] backdrop-blur-sm rounded-xl p-6 sm:p-7 text-center border border-white/[0.07] anim-up"><div class="text-3xl sm:text-4xl md:text-5xl font-bold mb-2" style="color:var(--gold);font-family:'Playfair Display',serif;">24/7</div><p class="text-xs sm:text-sm text-white/40 uppercase tracking-[0.15em]" data-en="Support" data-ar="دعم">Support</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 md:py-28" style="background:var(--white);" id="why-us">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="text-center mb-16 anim-up">
+      <span class="sec-label" data-en="Why VERDANZA" data-ar="لماذا فيردانزا">Why VERDANZA</span>
+      <h2 class="sec-title text-3xl sm:text-4xl md:text-5xl" data-en="The VERDANZA Difference" data-ar="ما يميز فيردانزا">The VERDANZA Difference</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="feat-card anim-up"><div class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><h3 class="text-lg font-semibold mb-2" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Premium Quality" data-ar="جودة فاخرة">Premium Quality</h3><p class="text-sm leading-relaxed" style="color:rgba(28,28,28,0.5);" data-en="Every product meets the highest international quality standards from trusted global suppliers." data-ar="كل منتج يستوفي أعلى معايير الجودة الدولية من موردين عالميين موثوقين.">Every product meets the highest international quality standards from trusted global suppliers.</p></div>
+      <div class="feat-card anim-up"><div class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><h3 class="text-lg font-semibold mb-2" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Trusted Products" data-ar="منتجات موثوقة">Trusted Products</h3><p class="text-sm leading-relaxed" style="color:rgba(28,28,28,0.5);" data-en="Authentic products backed by scientific research and hundreds of satisfied customers." data-ar="منتجات أصلية مدعومة بالبحث العلمي ومئات العملاء الراضين.">Authentic products backed by scientific research and hundreds of satisfied customers.</p></div>
+      <div class="feat-card anim-up"><div class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><h3 class="text-lg font-semibold mb-2" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Fast Delivery" data-ar="توصيل سريع">Fast Delivery</h3><p class="text-sm leading-relaxed" style="color:rgba(28,28,28,0.5);" data-en="Swift and reliable delivery to your doorstep. Your wellness journey starts without delay." data-ar="توصيل سريع وموثوق لباب منزلك. رحلتك الصحية تبدأ بدون تأخير.">Swift and reliable delivery to your doorstep. Your wellness journey starts without delay.</p></div>
+      <div class="feat-card anim-up"><div class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div><h3 class="text-lg font-semibold mb-2" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Authentic Products" data-ar="منتجات أصلية">Authentic Products</h3><p class="text-sm leading-relaxed" style="color:rgba(28,28,28,0.5);" data-en="100% genuine with verified authenticity. No imitations — only the real thing." data-ar="أصلية 100% مع مصداقية موثقة. لا تقليد — فقط الأصلي.">100% genuine with verified authenticity. No imitations — only the real thing.</p></div>
+      <div class="feat-card anim-up"><div class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div><h3 class="text-lg font-semibold mb-2" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Natural Ingredients" data-ar="مكونات طبيعية">Natural Ingredients</h3><p class="text-sm leading-relaxed" style="color:rgba(28,28,28,0.5);" data-en="Pure organic ingredients that your body recognizes and absorbs naturally." data-ar="مكونات عضوية نقية يتعرف عليها جسمك ويمتصها بشكل طبيعي.">Pure organic ingredients that your body recognizes and absorbs naturally.</p></div>
+      <div class="feat-card anim-up"><div class="feat-icon"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><h3 class="text-lg font-semibold mb-2" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Premium Support" data-ar="دعم متميز">Premium Support</h3><p class="text-sm leading-relaxed" style="color:rgba(28,28,28,0.5);" data-en="Dedicated WhatsApp support to guide you every step of your wellness journey." data-ar="دعم واتساب مخصص لإرشادك في كل خطوة من رحلتك الصحية.">Dedicated WhatsApp support to guide you every step of your wellness journey.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALLERY — 6 items (removed Premium Honey For Men & Dragon Spray) -->
+<section class="py-20 md:py-28 bg-white" id="gallery">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="text-center mb-16 anim-up">
+      <span class="sec-label" data-en="Gallery" data-ar="المعرض">Gallery</span>
+      <h2 class="sec-title text-3xl sm:text-4xl md:text-5xl" data-en="Product Showcase" data-ar="عرض المنتجات">Product Showcase</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5">
+      <div class="gal-item aspect-square anim-scale"><img src="https://i.imgur.com/oHmKLG9.jpeg" alt="Product" loading="lazy"><div class="gal-over"><span class="text-white text-sm font-medium" data-en="Magnesium Glycinate" data-ar="مغنيسيوم جلايسينات">Magnesium Glycinate</span></div></div>
+      <div class="gal-item aspect-square anim-scale"><img src="https://i.imgur.com/Hz2SaHU.jpeg" alt="Product" loading="lazy"><div class="gal-over"><span class="text-white text-sm font-medium" data-en="Skin Whitening" data-ar="تفتيح البشرة">Skin Whitening</span></div></div>
+      <div class="gal-item aspect-square anim-scale"><img src="https://i.imgur.com/AYfDD60.jpeg" alt="Product" loading="lazy"><div class="gal-over"><span class="text-white text-sm font-medium">NAD+</span></div></div>
+      <div class="gal-item aspect-square anim-scale"><img src="https://i.imgur.com/Q3KkJLH.jpeg" alt="Product" loading="lazy"><div class="gal-over"><span class="text-white text-sm font-medium" data-en="Back Pain Gel" data-ar="جل آلام الظهر">Back Pain Gel</span></div></div>
+      <div class="gal-item aspect-square anim-scale"><img src="https://i.imgur.com/sL4LRcP.jpeg" alt="Product" loading="lazy"><div class="gal-over"><span class="text-white text-sm font-medium" data-en="Berberine" data-ar="بربارين">Berberine</span></div></div>
+      <div class="gal-item aspect-square anim-scale"><img src="https://i.imgur.com/n6bjEEd.jpg" alt="Product" loading="lazy"><div class="gal-over"><span class="text-white text-sm font-medium" data-en="Maxman" data-ar="ماكسمان">Maxman</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 md:py-28" style="background:#f3f3f0;" id="testimonials">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="text-center mb-16 anim-up">
+      <span class="sec-label" data-en="Testimonials" data-ar="آراء العملاء">Testimonials</span>
+      <h2 class="sec-title text-3xl sm:text-4xl md:text-5xl" data-en="What Our Clients Say" data-ar="ماذا يقول عملاؤنا">What Our Clients Say</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="testi-card anim-up"><div class="testi-quote">"</div><div class="flex items-center gap-1 mb-5 pt-3"><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><p class="text-sm leading-relaxed mb-7" style="color:rgba(28,28,28,0.55);font-family:'Cormorant Garamond',serif;font-size:1.05rem;" data-en="The quality is exceptional. I've been using the Magnesium Glycinate for three months and the results are incredible. Truly premium!" data-ar="الجودة استثنائية. أستخدم المغنيسيوم جلايسينات منذ ثلاثة أشهر والنتائج مذهلة. فاخر حقاً!">The quality is exceptional. I've been using the Magnesium Glycinate for three months and the results are incredible. Truly premium!</p><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-sm" style="background:var(--green);">AK</div><div><p class="font-semibold text-sm" style="color:var(--dark-green);" data-en="Ahmed K." data-ar="أحمد ك.">Ahmed K.</p><p class="text-xs" style="color:rgba(28,28,28,0.35);" data-en="Verified Customer" data-ar="عميل موثق">Verified Customer</p></div></div></div>
+      <div class="testi-card anim-up"><div class="testi-quote">"</div><div class="flex items-center gap-1 mb-5 pt-3"><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><p class="text-sm leading-relaxed mb-7" style="color:rgba(28,28,28,0.55);font-family:'Cormorant Garamond',serif;font-size:1.05rem;" data-en="Fast delivery and amazing WhatsApp support. The NAD+ supplement genuinely improved my energy. I recommend VERDANZA to everyone!" data-ar="توصيل سريع ودعم واتساب مذهل. مكمل NAD+ حسّن طاقتي فعلاً. أنصح بفيردانزا للجميع!">Fast delivery and amazing WhatsApp support. The NAD+ supplement genuinely improved my energy. I recommend VERDANZA to everyone!</p><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-sm" style="background:var(--green);">SM</div><div><p class="font-semibold text-sm" style="color:var(--dark-green);" data-en="Sarah M." data-ar="سارة م.">Sarah M.</p><p class="text-xs" style="color:rgba(28,28,28,0.35);" data-en="Verified Customer" data-ar="عميل موثق">Verified Customer</p></div></div></div>
+      <div class="testi-card anim-up"><div class="testi-quote">"</div><div class="flex items-center gap-1 mb-5 pt-3"><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg><svg class="w-4 h-4" fill="#A89B6B" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><p class="text-sm leading-relaxed mb-7" style="color:rgba(28,28,28,0.55);font-family:'Cormorant Garamond',serif;font-size:1.05rem;" data-en="VERDANZA stands out from every brand I've tried. The Berberine is top-notch quality. Luxurious packaging and results speak for themselves." data-ar="فيردانزا تتميز عن كل علامة جربتها. البربارين بجودة عالية جداً. التغليف فاخر والنتائج تتحدث عن نفسها.">VERDANZA stands out from every brand I've tried. The Berberine is top-notch quality. Luxurious packaging and results speak for themselves.</p><div class="flex items-center gap-3"><div class="w-11 h-11 rounded-full flex items-center justify-center text-white font-semibold text-sm" style="background:var(--green);">MR</div><div><p class="font-semibold text-sm" style="color:var(--dark-green);" data-en="Mohammad R." data-ar="محمد ر.">Mohammad R.</p><p class="text-xs" style="color:rgba(28,28,28,0.35);" data-en="Verified Customer" data-ar="عميل موثق">Verified Customer</p></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section class="py-20 md:py-28 relative overflow-hidden" style="background:linear-gradient(145deg,#0c2e1a,var(--dark-green) 30%,var(--green) 60%,#0e3320);">
+  <div class="absolute inset-0 opacity-[0.03]" style="background-image:radial-gradient(circle at 30% 50%,var(--gold) 0.5px,transparent 0.5px);background-size:50px 50px;"></div>
+  <div class="absolute top-0 right-0 w-[450px] h-[450px] rounded-full" style="background:var(--gold);filter:blur(160px);opacity:0.07;"></div>
+  <div class="max-w-3xl mx-auto px-5 lg:px-8 text-center relative z-10 anim-up">
+    <span class="text-xs tracking-[0.35em] uppercase font-medium mb-5 block" style="color:var(--gold);" data-en="Start Your Journey" data-ar="ابدأ رحلتك">Start Your Journey</span>
+    <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-7" style="font-family:'Playfair Display',serif;line-height:1.12;" data-en="Transform Your Health Today" data-ar="غيّر صحتك اليوم">Transform Your Health Today</h2>
+    <p class="text-base sm:text-lg max-w-xl mx-auto mb-10" style="color:rgba(247,247,245,0.5);font-family:'Cormorant Garamond',serif;line-height:1.7;" data-en="Connect with us on WhatsApp and discover the perfect products for your wellness goals." data-ar="تواصل معنا عبر الواتساب واكتشف المنتجات المثالية لأهدافك الصحية.">Connect with us on WhatsApp and discover the perfect products for your wellness goals.</p>
+    <a href="https://wa.me/9613332818" target="_blank" class="btn-gold inline-flex"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg><span data-en="Chat on WhatsApp" data-ar="تحدث عبر واتساب">Chat on WhatsApp</span></a>
+  </div>
+</section>
+
+<section class="py-20 md:py-28" style="background:var(--white);" id="contact">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="text-center mb-16 anim-up">
+      <span class="sec-label" data-en="Get in Touch" data-ar="تواصل معنا">Get in Touch</span>
+      <h2 class="sec-title text-3xl sm:text-4xl md:text-5xl" data-en="Contact Us" data-ar="اتصل بنا">Contact Us</h2>
+      <div class="sec-line"></div>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <a href="https://wa.me/9613332818" target="_blank" class="feat-card text-center anim-up" style="text-decoration:none;"><div class="feat-icon mx-auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div><h3 class="text-lg font-semibold mb-1" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="WhatsApp" data-ar="واتساب">WhatsApp</h3><p class="text-sm" style="color:var(--gold);">+961 3 332 818</p></a>
+      <div class="feat-card text-center anim-up"><div class="feat-icon mx-auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></div><h3 class="text-lg font-semibold mb-1" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Location" data-ar="الموقع">Location</h3><p class="text-sm" style="color:rgba(28,28,28,0.45);" data-en="Worldwide Delivery" data-ar="توصيل عالمي">Worldwide Delivery</p></div>
+      <div class="feat-card text-center anim-up"><div class="feat-icon mx-auto"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A89B6B" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></div><h3 class="text-lg font-semibold mb-1" style="font-family:'Playfair Display',serif;color:var(--dark-green);" data-en="Working Hours" data-ar="ساعات العمل">Working Hours</h3><p class="text-sm" style="color:rgba(28,28,28,0.45);" data-en="24/7 Available" data-ar="متاح 24/7">24/7 Available</p></div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-5 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-10 mb-14">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-2.5 mb-5"><img src="https://i.imgur.com/peR9gKf.png" alt="VERDANZA" class="h-11 w-auto"><span class="text-white font-semibold tracking-[0.14em] text-lg" style="font-family:'Playfair Display',serif;">VERDANZA</span></div>
+        <p class="text-sm leading-relaxed max-w-sm mb-7" style="color:rgba(247,247,245,0.4);font-family:'Cormorant Garamond',serif;font-size:1rem;line-height:1.7;" data-en="Premium health and wellness products crafted for those who seek excellence. Elevate your wellness journey with VERDANZA." data-ar="منتجات صحة وعافية فاخرة مصممة لمن يسعى للتميز. ارتقِ برحلتك الصحية مع فيردانزا.">Premium health and wellness products crafted for those who seek excellence. Elevate your wellness journey with VERDANZA.</p>
+        <div class="flex items-center gap-3">
+          <a href="#" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:border-[#A89B6B] hover:bg-[#A89B6B]/10 transition-all duration-300" aria-label="Instagram"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(247,247,245,0.45)" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:border-[#A89B6B] hover:bg-[#A89B6B]/10 transition-all duration-300" aria-label="Facebook"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="rgba(247,247,245,0.45)" stroke-width="1.5"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg></a>
+          <a href="https://wa.me/9613332818" target="_blank" class="w-9 h-9 rounded-full border border-white/10 flex items-center justify-center hover:border-[#25D366] hover:bg-[#25D366]/10 transition-all duration-300" aria-label="WhatsApp"><svg width="14" height="14" viewBox="0 0 24 24" fill="rgba(247,247,245,0.45)"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
+        </div>
+      </div>
+      <div><h4 class="text-white font-semibold text-xs tracking-[0.18em] uppercase mb-5" data-en="Quick Links" data-ar="روابط سريعة">Quick Links</h4><ul class="space-y-2.5"><li><a href="#hero" data-en="Home" data-ar="الرئيسية">Home</a></li><li><a href="#products" data-en="Products" data-ar="المنتجات">Products</a></li><li><a href="#about" data-en="About" data-ar="من نحن">About</a></li><li><a href="#why-us" data-en="Why Us" data-ar="لماذا نحن">Why Us</a></li><li><a href="#testimonials" data-en="Reviews" data-ar="التقييمات">Reviews</a></li></ul></div>
+      <div><h4 class="text-white font-semibold text-xs tracking-[0.18em] uppercase mb-5" data-en="Contact" data-ar="تواصل">Contact</h4><ul class="space-y-2.5"><li><a href="https://wa.me/9613332818" target="_blank">+961 3 332 818</a></li><li><a href="#contact" data-en="Send Message" data-ar="أرسل رسالة">Send Message</a></li><li><a href="#" data-en="Support" data-ar="الدعم">Support</a></li></ul></div>
+    </div>
+    <div class="w-full h-[1px] mb-7" style="background:rgba(247,247,245,0.06);"></div>
+    <div class="flex flex-col md:flex-row items-center justify-between gap-3">
+      <p class="text-xs" style="color:rgba(247,247,245,0.25);">© 2025 VERDANZA. <span data-en="All rights reserved." data-ar="جميع الحقوق محفوظة.">All rights reserved.</span></p>
+      <p class="text-xs" style="color:rgba(247,247,245,0.15);" data-en="Premium Health & Wellness" data-ar="الصحة والعافية الفاخرة">Premium Health & Wellness</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  let animStarted = false;
+  function startSite(){ if(animStarted) return; animStarted = true; document.getElementById('preloader').classList.add('done'); setTimeout(initGSAP, 300); }
+  window.addEventListener('load', ()=> setTimeout(startSite, 1500));
+  setTimeout(startSite, 3000);
+
+  const nav = document.getElementById('navbar');
+  window.addEventListener('scroll', ()=>{ nav.classList.toggle('scrolled', window.scrollY > 60); }, {passive:true});
+
+  window.toggleMenu = function(){ document.getElementById('mobMenu').classList.toggle('open'); document.getElementById('burger').classList.toggle('open'); document.body.style.overflow = document.getElementById('mobMenu').classList.contains('open') ? 'hidden' : ''; };
+  window.closeMenu = function(){ document.getElementById('mobMenu').classList.remove('open'); document.getElementById('burger').classList.remove('open'); document.body.style.overflow = ''; };
+
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{ a.addEventListener('click', function(e){ e.preventDefault(); const t = document.querySelector(this.getAttribute('href')); if(t){ window.scrollTo({top: t.offsetTop - 70, behavior:'smooth'}); } }); });
+
+  let lang = 'en';
+  window.switchLang = function(){
+    lang = lang === 'en' ? 'ar' : 'en';
+    const html = document.documentElement;
+    html.setAttribute('lang', lang);
+    html.setAttribute('dir', lang === 'ar' ? 'rtl' : 'ltr');
+    const label = lang === 'ar' ? 'English' : 'عربي';
+    document.getElementById('langLabelD').textContent = label;
+    document.getElementById('langLabelM').textContent = label;
+    document.querySelectorAll('[data-en]').forEach(el=>{ const txt = el.getAttribute('data-' + lang); if(txt){ if(el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'){ el.placeholder = txt; } else { el.textContent = txt; } } });
+    document.querySelectorAll('.prod-order a').forEach(a=>{ const txt = a.getAttribute('data-' + lang); if(txt) a.textContent = txt; });
+    document.body.style.fontFamily = lang === 'ar' ? "'Noto Kufi Arabic','Inter',sans-serif" : "'Inter',sans-serif";
+  };
+
+  const pc = document.getElementById('heroParticles');
+  if(pc){ for(let i=0;i<20;i++){ const p = document.createElement('div'); p.className = 'particle'; p.style.left = Math.random()*100+'%'; p.style.top = Math.random()*100+'%'; p.style.width = (2+Math.random()*3)+'px'; p.style.height = p.style.width; pc.appendChild(p); } }
+
+  function initGSAP(){
+    gsap.registerPlugin(ScrollTrigger);
+    const ht = gsap.timeline({defaults:{ease:'power3.out'}});
+    ht.fromTo('#heroLogo', {y:30,opacity:0},{y:0,opacity:1,duration:0.8,delay:0.1})
+      .fromTo('#heroSub', {y:20,opacity:0},{y:0,opacity:1,duration:0.6},'-=0.4')
+      .fromTo('#heroTitle',{y:40,opacity:0},{y:0,opacity:1,duration:0.9},'-=0.35')
+      .fromTo('#heroDesc', {y:25,opacity:0},{y:0,opacity:1,duration:0.7},'-=0.4')
+      .fromTo('#heroBtns',{y:20,opacity:0},{y:0,opacity:1,duration:0.6},'-=0.3')
+      .fromTo('#scrollHint',{opacity:0},{opacity:1,duration:0.5},'-=0.2');
+    gsap.to('.hero-glow',{ y:-80, scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1.5} });
+    document.querySelectorAll('.particle').forEach((p,i)=>{ gsap.to(p,{ y: -60 - Math.random()*80, x: (Math.random()-0.5)*40, opacity: 0.15 + Math.random()*0.25, duration: 3 + Math.random()*4, repeat:-1, yoyo:true, ease:'sine.inOut', delay: Math.random()*3 }); });
+    const heroEl = document.querySelector('.hero');
+    if(heroEl && window.innerWidth > 768){ heroEl.addEventListener('mousemove',(e)=>{ const r = heroEl.getBoundingClientRect(); const x = (e.clientX - r.left)/r.width - 0.5; const y = (e.clientY - r.top)/r.height - 0.5; gsap.to('.hero-glow',{x:x*25, y:y*15, duration:1.2, ease:'power2.out', overwrite:'auto'}); }); }
+    ['.anim-up','.anim-left','.anim-right','.anim-scale'].forEach(cls=>{ gsap.utils.toArray(cls).forEach((el,i)=>{ const props = {opacity:1, duration:0.8, ease:'power3.out'}; if(cls === '.anim-up') props.y = 0; if(cls === '.anim-left') props.x = 0; if(cls === '.anim-right') props.x = 0; if(cls === '.anim-scale'){ props.scale = 1; props.duration = 0.6; } gsap.to(el, { ...props, scrollTrigger:{ trigger:el, start:'top 90%', toggleActions:'play none none none', }, delay: i % 4 * 0.08 }); }); });
+    ScrollTrigger.batch('.prod-card',{ onEnter: batch => { gsap.to(batch,{opacity:1, y:0, stagger:0.07, duration:0.7, ease:'power3.out', overwrite:true}); }, start:'top 92%' });
+    ScrollTrigger.batch('.feat-card',{ onEnter: batch => { gsap.to(batch,{opacity:1, y:0, stagger:0.08, duration:0.65, ease:'power3.out', overwrite:true}); }, start:'top 90%' });
+    ScrollTrigger.batch('.gal-item',{ onEnter: batch => { gsap.to(batch,{opacity:1, scale:1, stagger:0.06, duration:0.55, ease:'power3.out', overwrite:true}); }, start:'top 92%' });
+    ScrollTrigger.batch('.testi-card',{ onEnter: batch => { gsap.to(batch,{opacity:1, y:0, stagger:0.1, duration:0.7, ease:'power3.out', overwrite:true}); }, start:'top 90%' });
+    gsap.utils.toArray('[style*="filter:blur"]').forEach(el=>{ gsap.to(el,{ y: -40, scrollTrigger:{trigger:el.parentElement, start:'top bottom', end:'bottom top', scrub:2} }); });
+  }
+})();
+</script>
+</body>
+</html>
